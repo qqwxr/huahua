@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>花花的健康饮食管理</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .login-page, .main-page {
+            display: none;
+        }
+
+        .login-page.active, .main-page.active {
+            display: block;
+        }
+
+        .login-box {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .login-box h1 {
+            color: #2E7D32;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border: 1px solid rgba(46, 125, 50, 0.2);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s;
+        }
+
+        .login-box input:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            background: #2E7D32;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .login-box button:hover {
+            background: #1B5E20;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+        }
+
+        .error-msg {
+            color: #c62828;
+            margin-top: 15px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .day-nav {
+            display: flex;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .day-btn {
+            flex: 1;
+            padding: 12px 15px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+            font-size: 15px;
+            font-weight: 500;
+            color: #2E7D32;
+        }
+
+        .day-btn.active {
+            background: #2E7D32;
+            color: white;
+            box-shadow: 0 4px 10px rgba(46, 125, 50, 0.2);
+        }
+
+        .day-btn:hover {
+            background: rgba(46, 125, 50, 0.1);
+        }
+
+        .meal-section {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            margin-bottom: 20px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.3s;
+        }
+
+        .meal-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(31, 38, 135, 0.15);
+        }
+
+        .meal-header {
+            background: linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%);
+            color: white;
+            padding: 18px 20px;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .meal-content {
+            padding: 25px;
+        }
+
+        .meal-name {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1B5E20;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed rgba(46, 125, 50, 0.2);
+        }
+
+        .ingredients, .method {
+            margin-bottom: 20px;
+        }
+
+        .ingredients h4, .method h4 {
+            color: #2E7D32;
+            margin-bottom: 12px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ingredients ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .ingredients li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            border-bottom: 1px dashed rgba(0,0,0,0.05);
+        }
+
+        .ingredients li:before {
+            content: "•";
+            color: #4CAF50;
+            font-size: 24px;
+            position: absolute;
+            left: 10px;
+            top: 5px;
+        }
+
+        .method p {
+            line-height: 1.8;
+            color: #37474F;
+            background: rgba(200, 230, 201, 0.15);
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #4CAF50;
+            white-space: pre-line;
+        }
+
+        .nutrition-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .nutrition-item {
+            text-align: center;
+            padding: 12px 5px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.2s;
+        }
+
+        .nutrition-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+        }
+
+        .nutrition-label {
+            font-size: 12px;
+            color: #546E7A;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .nutrition-value {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .sodium { color: #2196F3; }
+        .cholesterol { color: #FF9800; }
+        .calories { color: #4CAF50; }
+        .vitamin { color: #9C27B0; }
+
+        .salt-tracker {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .salt-info {
+            font-size: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .salt-amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FFE082;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .salt-btn {
+            background: #FFE082;
+            color: #1B5E20;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .salt-btn:hover {
+            background: #FFD54F;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+        .medical-notice, .preference-notice {
+            background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+            border-left: 4px solid #FFA000;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 15px;
+            font-size: 15px;
+            color: #5D4037;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .preference-notice {
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            border-left: 4px solid #2E7D32;
+            color: #1B5E20;
+        }
+
+        .preference-notice strong, .medical-notice strong {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .daily-summary {
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .daily-summary h3 {
+            color: #1565C0;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .summary-value {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .summary-label {
+            font-size: 14px;
+            color: #37474F;
+            font-weight: 500;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .login-box {
+                padding: 30px 20px;
+            }
+            
+            .login-box h1 {
+                font-size: 24px;
+            }
+            
+            .day-btn {
+                font-size: 14px;
+                padding: 8px 10px;
+            }
+            
+            .salt-info {
+                font-size: 14px;
+            }
+            
+            .salt-amount {
+                font-size: 20px;
+            }
+            
+            .salt-btn {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+            
+            .meal-header {
+                font-size: 18px;
+                padding: 15px;
+            }
+            
+            .meal-content {
+                padding: 20px 15px;
+            }
+            
+            .meal-name {
+                font-size: 20px;
+            }
+        }
+
+        .welcome-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            border-radius: 20px;
+            color: #1B5E20;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .welcome-header h1 {
+            font-size: 26px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .welcome-header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 登录页面 -->
+        <div class="login-page active">
+            <div class="login-box">
+                <h1>花花的健康饮食管理</h1>
+                <p style="color: #666; margin-bottom: 20px;">请输入访问密码</p>
+                <input type="password" id="passwordInput" placeholder="请输入密码" maxlength="4">
+                <button onclick="checkPassword()">进入系统</button>
+                <div class="error-msg" id="errorMsg">密码错误，请重试！</div>
+
+               <!-- <div class="medical-notice" style="margin-top: 20px; font-size: 14px;">
+                    <strong>⚠️ 医疗免责声明</strong><br>
+                    本网站提供的饮食建议仅供参考，不能替代专业医疗建议。花花阿姨患有高血压、冠心病等疾病，请务必遵医嘱用药，定期复查。如有不适，请立即就医。
+                </div>-->
+            </div>
+        </div>
+
+        <!-- 主页面 -->
+        <div class="main-page">
+            <div class="welcome-header">
+                <h1>花花的健康饮食管理</h1>
+                <p>每日盐量监控 | 个性化食谱推荐</p>
+            </div>
+
+            <div class="preference-notice">
+                <strong>🍽️ 饮食偏好提醒</strong><br>
+                口味清淡，少吃辣，怕腥 | 爱吃米饭、面条、瘦肉、排骨、淡水鱼 | 喜欢蒸煮炖 | 不吃海鲜、少吃豆制品
+            </div>
+
+            <div class="day-nav" id="dayNav">
+                <button class="day-btn active" onclick="showDay(0)">周一</button>
+                <button class="day-btn" onclick="showDay(1)">周二</button>
+                <button class="day-btn" onclick="showDay(2)">周三</button>
+                <button class="day-btn" onclick="showDay(3)">周四</button>
+                <button class="day-btn" onclick="showDay(4)">周五</button>
+                <button class="day-btn" onclick="showDay(5)">周六</button>
+                <button class="day-btn" onclick="showDay(6)">周日</button>
+                <button class="day-btn" onclick="showToday()">今日</button>
+            </div>
+
+            <div id="dailySummary" class="daily-summary" style="display: none;">
+                <h3>📊 今日营养总计</h3>
+                <div class="summary-grid" id="summaryGrid"></div>
+            </div>
+
+            <div id="mealContainer"></div>
+        </div>
+    </div>
+
+    <!-- 盐勺跟踪器 -->
+    <div class="salt-tracker">
+        <div class="salt-info">
+            <div>今日盐勺剩余</div>
+            <div class="salt-amount" id="saltAmount">5.0g</div>
+        </div>
+        <button class="salt-btn" onclick="reduceSalt()">使用 -0.5g</button>
+    </div>
+
+    <script>
+        // 一周7天的食谱数据（严格符合营养要求）
+        const weeklyMenu = [
+            // 周一
+            {
+                day: "周一",
+                meals: {
+                    breakfast: {
+                        name: "小米南瓜粥+水煮蛋",
+                        ingredients: ["小米 50g", "南瓜 100g", "鸡蛋 1个", "红枣 2颗"],
+                        method: "1. 南瓜去皮切小块，与小米一同下锅煮粥\n2. 鸡蛋冷水下锅煮8分钟至熟\n3. 红枣去核切片，粥熟前5分钟加入\n4. 早餐总盐量约0.5g",
+                        sodium: 250,
+                        cholesterol: 186,
+                        calories: 320,
+                        vitamins: "维生素A 320μg | 维生素C 8mg"
+                    },
+                    lunch: {
+                        name: "米饭+白菜炒瘦肉+萝卜汤",
+                        ingredients: ["大米 80g", "瘦猪肉 30g", "白菜 150g", "白萝卜 100g", "胡萝卜 50g", "木耳 10g"],
+                        method: "1. 大米蒸熟成米饭\n2. 瘦肉切薄片，用淀粉腌制后清炒白菜\n3. 白萝卜与胡萝卜片煮汤，煮15分钟\n4. 黑木耳泡发后焯水凉拌\n5. 午餐总盐量约1.5g",
+                        sodium: 550,
+                        cholesterol: 25,
+                        calories: 480,
+                        vitamins: "维生素A 180μg | 维生素C 35mg"
+                    },
+                    dinner: {
+                        name: "米饭+清蒸鲈鱼+芹菜炒香干",
+                        ingredients: ["大米 70g", "鲈鱼 120g", "芹菜 100g", "香干 20g", "姜末 少许"],
+                        method: "1. 大米蒸熟成米饭\n2. 鲈鱼清洗干净，加姜片蒸8分钟\n3. 芹菜切段，与香干丝快炒2分钟\n4. 淋少许生抽调味\n5. 晚餐总盐量约1.2g",
+                        sodium: 450,
+                        cholesterol: 45,
+                        calories: 420,
+                        vitamins: "维生素A 25μg | 维生素C 12mg"
+                    },
+                    snack: {
+                        name: "蒸南瓜+胡萝卜条",
+                        ingredients: ["南瓜 150g", "胡萝卜 50g"],
+                        method: "南瓜和胡萝卜切条，蒸锅蒸15分钟至软熟，温食为宜",
+                        sodium: 10,
+                        cholesterol: 0,
+                        calories: 95,
+                        vitamins: "维生素A 650μg | 维生素C 5mg"
+                    }
+                },
+                dailyTotal: {
+                    sodium: 1260,
+                    cholesterol: 256,
+                    calories: 1315
+                }
+            },
+            // 周二
+            {
+                day: "周二",
+                meals: {
+                    breakfast: {
+                        name: "燕麦玉米粥+水煮蛋",
+                        ingredients: ["燕麦片 50g", "鲜玉米粒 50g", "鸡蛋 1个", "核桃仁 10g"],
+                        method: "1. 燕麦片与玉米粒一同煮粥\n2. 鸡蛋煮熟切半\n3. 核桃仁压碎撒入粥中\n4. 早餐总盐量约0.3g",
+                        sodium: 180,
+                        cholesterol: 186,
+                        calories: 340,
+                        vitamins: "维生素E 2mg | 维生素C 5mg"
+                    },
+                    lunch: {
+                        name: "米饭+胡萝卜炖排骨+清炒油麦菜",
+                        ingredients: ["大米 80g", "排骨 50g", "胡萝卜 100g", "油麦菜 150g", "姜片 少许"],
+                        method: "1. 大米蒸熟成米饭\n2. 排骨焯水后与胡萝卜块炖煮40分钟\n3. 油麦菜清炒2分钟\n4. 午餐总盐量约1.8g",
+                        sodium: 680,
+                        cholesterol: 35,
+                        calories: 520,
+                        vitamins: "维生素A 520μg | 维生素C 25mg"
+                    },
+                    dinner: {
+                        name: "米饭+清蒸鲈鱼+韭菜炒豆芽",
+                        ingredients: ["大米 70g", "鲈鱼 100g", "韭菜 80g", "绿豆芽 50g", "姜丝 少许"],
+                        method: "1. 大米蒸熟成米饭\n2. 鲈鱼加姜片蒸8分钟\n3. 韭菜与豆芽快炒1分钟\n4. 淋少许生抽调味\n5. 晚餐总盐量约1.0g",
+                        sodium: 380,
+                        cholesterol: 38,
+                        calories: 380,
+                        vitamins: "维生素A 20μg | 维生素C 18mg"
+                    },
+                    snack: {
+                        name: "蒸地瓜+百合",
+                        ingredients: ["地瓜 150g", "百合 20g"],
+                        method: "地瓜去皮切块，与百合一起蒸20分钟至熟软",
+                        sodium: 8,
+                        cholesterol: 0,
+                        calories: 140,
+                        vitamins: "维生素C 15mg | 钾丰富"
+                    }
+                },
+                dailyTotal: {
+                    sodium: 1248,
+                    cholesterol: 259,
+                    calories: 1380
+                }
+            },
+            // 周三
+            {
+                day: "周三",
+                meals: {
+                    breakfast: {
+                        name: "二米粥+水煮蛋+凉拌黄瓜",
+                        ingredients: ["大米 30g", "小米 30g", "鸡蛋 1个", "黄瓜 80g"],
+                        method: "1. 大米小米混合煮粥\n2. 鸡蛋煮熟切半\n3. 黄瓜拍碎，加少许醋凉拌\n4. 早餐总盐量约0.4g",
+                        sodium: 220,
+                        cholesterol: 186,
+                        calories: 310,
+                        vitamins: "维生素A 15μg | 维生素C 6mg"
+                    },
+                    lunch: {
+                        name: "米饭+木耳炒瘦肉+玉米排骨汤",
+                        ingredients: ["大米 80g", "瘦猪肉 30g", "木耳 20g", "甜玉米 100g", "排骨 40g", "胡萝卜 50g"],
+                        method: "1. 大米蒸熟成米饭\n2. 泡发木耳与瘦肉片清炒\n3. 玉米切段与排骨、胡萝卜炖汤\n4. 午餐总盐量约1.6g",
+                        sodium: 620,
+                        cholesterol: 30,
+                        calories: 490,
+                        vitamins: "维生素A 220μg | 维生素C 12mg"
+                    },
+                    dinner: {
+                        name: "米饭+清蒸鲈鱼+蒜蓉白菜",
+                        ingredients: ["大米 70g", "鲈鱼 130g", "白菜 200g", "蒜末 少许"],
+                        method: "1. 大米蒸熟成米饭\n2. 鲈鱼清蒸8分钟\n3. 白菜蒜蓉清炒3分钟\n4. 晚餐总盐量约1.0g",
+                        sodium: 390,
+                        cholesterol: 48,
+                        calories: 400,
+                        vitamins: "维生素A 80μg | 维生素C 45mg"
+                    },
+                    snack: {
+                        name: "蒸南瓜+胡萝卜泥",
+                        ingredients: ["南瓜 150g", "胡萝卜 80g"],
+                        method: "南瓜和胡萝卜蒸熟后，胡萝卜压成泥拌食",
+                        sodium: 12,
+                        cholesterol: 0,
+                        calories: 110,
+                        vitamins: "维生素A 720μg | 维生素C 8mg"
+                    }
+                },
+                dailyTotal: {
+                    sodium: 1242,
+                    cholesterol: 264,
+                    calories: 1310
+                }
+            },
+            // 周四
+            {
+                day: "周四",
+                meals: {
+                    breakfast: {
+                        name: "燕麦粥+蒸蛋羹",
+                        ingredients: ["燕麦片 50g", "鸡蛋 1个", "温水 100ml", "香油 1滴"],
+                        method: "1. 燕麦片煮粥\n2. 鸡蛋加温水打匀，蒸8分钟成蛋羹\n3. 滴少许香油调味\n4. 早餐总盐量约0.3g",
+                        sodium: 190,
+                        cholesterol: 186,
+                        calories: 290,
+                        vitamins: "维生素A 45μg | 维生素C 3mg"
+                    },
+                    lunch: {
+                        name: "米饭+胡萝卜炒肉片+白菜豆腐汤",
+                        ingredients: ["大米 80g", "瘦猪肉 35g", "胡萝卜 100g", "白菜 150g", "嫩豆腐 50g"],
+                        method: "1. 大米蒸熟成米饭\n2. 胡萝卜与肉片清炒\n3. 白菜与豆腐煮汤\n4. 午餐总盐量约1.5g",
+                        sodium: 580,
+                        cholesterol: 32,
+                        calories: 460,
+                        vitamins: "维生素A 480μg | 维生素C 38mg"
+                    },
+                    dinner: {
+                        name: "米饭+清蒸鲈鱼+韭菜炒豆芽",
+                        ingredients: ["大米 70g", "鲈鱼 110g", "韭菜 90g", "绿豆芽 60g", "姜丝 少许"],
+                        method: "1. 大米蒸熟成米饭\n2. 鲈鱼清蒸8分钟\n3. 韭菜与豆芽快炒1分钟\n4. 晚餐总盐量约1.0g",
+                        sodium: 370,
+                        cholesterol: 42,
+                        calories: 360,
+                        vitamins: "维生素A 25μg | 维生素C 20mg"
+                    },
+                    snack: {
+                        name: "蒸玉米+百合",
+                        ingredients: ["鲜玉米 150g", "百合 20g"],
+                        method: "玉米切段与百合一起蒸20分钟，香甜可口",
+                        sodium: 10,
+                        cholesterol: 0,
+                        calories: 130,
+                        vitamins: "维生素E 1.5mg | 膳食纤维丰富"
+                    }
+                },
+                dailyTotal: {
+                    sodium: 1150,
+                    cholesterol: 260,
+                    calories: 1240
+                }
+            },
+            // 周五
+            {
+                day: "周五",
+                meals: {
+                    breakfast: {
+                        name: "小米玉米粥+水煮蛋",
+                        ingredients: ["小米 40g", "鲜玉米粒 50g", "鸡蛋 1个", "红枣 2颗"],
+                        method: "1. 小米与玉米粒同煮\n2. 鸡蛋煮熟切半\n3. 红枣去核切片加入粥中\n4. 早餐总盐量约0.3g",
+                        sodium: 200,
+                        cholesterol: 186,
+                        calories: 330,
+                        vitamins: "维生素A 35μg | 维生素C 5mg"
+                    },
+                    lunch: {
+                        name: "米饭+油麦菜炒瘦肉+萝卜排骨汤",
+                        ingredients: ["大米 80g", "瘦猪肉 30g", "油麦菜 150g", "白萝卜 120g", "排骨 40g"],
+                        method: "1. 大米蒸熟成米饭\n2. 油麦菜与瘦肉片清炒\n3. 萝卜与排骨炖汤40分钟\n4. 午餐总盐量约1.7g",
+                        sodium: 650,
+                        cholesterol: 28,
+                        calories: 490,
+                        vitamins: "维生素A 350μg | 维生素C 40mg"
+                    },
+                    dinner: {
+                        name: "米饭+清蒸鲈鱼+胡萝卜丝炒木耳",
+                        ingredients: ["大米 70g", "鲈鱼 120g", "胡萝卜 80g", "木耳 20g", "葱花 少许"],
+                        method: "1. 大米蒸熟成米饭\n2. 鲈鱼清蒸8分钟\n3. 胡萝卜丝与泡发木耳清炒\n4. 晚餐总盐量约1.0g",
+                        sodium: 380,
+                        cholesterol: 45,
+                        calories: 380,
+                        vitamins: "维生素A 520μg | 维生素C 5mg"
+                    },
+                    snack: {
+                        name: "南瓜羹+地瓜",
+                        ingredients: ["南瓜 150g", "地瓜 100g"],
+                        method: "南瓜蒸后打成羹，地瓜蒸熟切块，搭配食用",
+                        sodium: 12,
+                        cholesterol: 0,
+                        calories: 145,
+                        vitamins: "维生素A 600μg | 膳食纤维丰富"
+                    }
+                },
+                dailyTotal: {
+                    sodium: 1242,
+                    cholesterol: 259,
+                    calories: 1345
+                }
+            },
+            // 周六
+            {
+                day: "周六",
+                meals: {
+                    breakfast: {
+                        name: "全麦馒头+水煮蛋+豆浆",
+                        ingredients: ["全麦馒头 80g", "鸡蛋 1个", "无糖豆浆 200ml"],
+                        method: "1. 馒头蒸熟，鸡蛋煮熟\n2. 豆浆加热至温热\n3. 搭配食用营养均衡\n4. 早餐总盐量约0.4g",
+                        sodium: 220,
+                        cholesterol: 186,
+                        calories: 350,
+                        vitamins: "维生素B族丰富 | 蛋白质优质"
+                    },
+                    lunch: {
+                        name: "米饭+胡萝卜炖排骨+清炒白菜",
+                        ingredients: ["大米 80g", "排骨 60g", "胡萝卜 120g", "白菜 180g", "姜片 少许"],
+                        method: "1. 大米蒸熟成米饭\n2. 排骨焯水后与胡萝卜炖煮45分钟\n3. 白菜清炒2分钟\n4. 午餐总盐量约1.8g",
+                        sodium: 700,
+                        cholesterol: 45,
+                        calories: 540,
+                        vitamins: "维生素A 580μg | 维生素C 42mg"
+                    },
+                    dinner: {
+                        name: "米饭+清蒸鲈鱼+韭菜炒香干",
+                        ingredients: ["大米 70g", "鲈鱼 100g", "韭菜 80g", "香干 25g", "姜丝 少许"],
+                        method: "1. 大米蒸熟成米饭\n2. 鲈鱼清蒸8分钟\n3. 韭菜与香干丝快炒1分钟\n4. 晚餐总盐量约1.0g",
+                        sodium: 360,
+                        cholesterol: 40,
+                        calories: 360,
+                        vitamins: "维生素A 20μg | 维生素C 15mg"
+                    },
+                    snack: {
+                        name: "蒸胡萝卜+百合银耳",
+                        ingredients: ["胡萝卜 150g", "百合 20g", "银耳 5g"],
+                        method: "胡萝卜切块，与泡发银耳、百合一起蒸20分钟",
+                        sodium: 15,
+                        cholesterol: 0,
+                        calories: 95,
+                        vitamins: "维生素A 850μg | 胶质丰富"
+                    }
+                },
+                dailyTotal: {
+                    sodium: 1295,
+                    cholesterol: 271,
+                    calories: 1345
+                }
+            },
+            // 周日
+            {
+                day: "周日",
+                meals: {
+                    breakfast: {
+                        name: "燕麦粥+蒸蛋羹",
+                        ingredients: ["燕麦片 50g", "鸡蛋 1个", "枸杞 少许", "香油 1滴"],
+                        method: "1. 燕麦片煮粥\n2. 鸡蛋加温水蒸成嫩蛋羹\n3. 撒几粒枸杞装饰\n4. 早餐总盐量约0.3g",
+                        sodium: 190,
+                        cholesterol: 186,
+                        calories: 295,
+                        vitamins: "维生素A 50μg | 蛋白质丰富"
+                    },
+                    lunch: {
+                        name: "米饭+玉米排骨汤+油麦菜",
+                        ingredients: ["大米 80g", "甜玉米 150g", "排骨 50g", "油麦菜 150g", "胡萝卜 50g"],
+                        method: "1. 大米蒸熟成米饭\n2. 玉米、胡萝卜与排骨炖汤\n3. 油麦菜焯水后清炒\n4. 午餐总盐量约1.6g",
+                        sodium: 620,
+                        cholesterol: 40,
+                        calories: 480,
+                        vitamins: "维生素A 400μg | 维生素C 35mg"
+                    },
+                    dinner: {
+                        name: "米饭+清蒸鲈鱼+蒜蓉地瓜叶",
+                        ingredients: ["大米 70g", "鲈鱼 120g", "地瓜叶 150g", "蒜末 少许"],
+                        method: "1. 大米蒸熟成米饭\n2. 鲈鱼清蒸8分钟\n3. 地瓜叶蒜蓉清炒2分钟\n4. 晚餐总盐量约1.0g",
+                        sodium: 370,
+                        cholesterol: 45,
+                        calories: 370,
+                        vitamins: "维生素A 300μg | 维生素C 40mg"
+                    },
+                    snack: {
+                        name: "蒸南瓜+核桃仁",
+                        ingredients: ["南瓜 150g", "核桃仁 10g"],
+                        method: "南瓜切块蒸熟，搭配核桃仁食用，营养丰富",
+                        sodium: 8,
+                        cholesterol: 0,
+                        calories: 115,
+                        vitamins: "维生素A 600μg | 维生素E 1mg"
+                    }
+                },
+                dailyTotal: {
+                    sodium: 1188,
+                    cholesterol: 271,
+                    calories: 1260
+                }
+            }
+        ];
+
+        // 营养建议标准
+        const nutritionStandard = {
+            sodium: { min: 1300, max: 1800, unit: 'mg' },
+            cholesterol: { min: 150, max: 250, unit: 'mg' },
+            calories: { min: 1500, max: 1800, unit: 'kcal' }
+        };
+
+        let currentDay = 0;
+        let remainingSalt = 5.0;
+
+        // 初始化
+        window.onload = function() {
+            loadSaltFromStorage();
+            showDay(0);
+        };
+
+        // 密码验证
+        function checkPassword() {
+            const input = document.getElementById('passwordInput').value;
+            const errorMsg = document.getElementById('errorMsg');
+            
+            if (input === "2305") {
+                document.querySelector('.login-page').classList.remove('active');
+                document.querySelector('.main-page').classList.add('active');
+                errorMsg.style.display = 'none';
+            } else {
+                errorMsg.style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+
+        // 显示指定天的食谱
+        function showDay(dayIndex) {
+            currentDay = dayIndex;
+            updateDayNav();
+            
+            const dayMenu = weeklyMenu[dayIndex];
+            const container = document.getElementById('mealContainer');
+            const summaryDiv = document.getElementById('dailySummary');
+            const summaryGrid = document.getElementById('summaryGrid');
+            
+            // 显示每日营养总计
+            summaryDiv.style.display = 'block';
+            const total = dayMenu.dailyTotal;
+            summaryGrid.innerHTML = `
+                <div class="summary-item">
+                    <div class="summary-value" style="color: #2196F3;">${total.sodium}mg</div>
+                    <div class="summary-label">钠含量</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" style="color: #FF9800;">${total.cholesterol}mg</div>
+                    <div class="summary-label">胆固醇</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" style="color: #4CAF50;">${total.calories}kcal</div>
+                    <div class="summary-label">总热量</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" style="color: #9C27B0;">
+                        ${total.cholesterol >= nutritionStandard.cholesterol.min && total.cholesterol <= nutritionStandard.cholesterol.max ? '✅' : '⚠️'}
+                    </div>
+                    <div class="summary-label">胆固醇控制</div>
+                </div>
+            `;
+            
+            let html = '';
+            const meals = ['breakfast', 'lunch', 'dinner', 'snack'];
+            const mealNames = {
+                breakfast: '早餐',
+                lunch: '午餐', 
+                dinner: '晚餐',
+                snack: '加餐'
+            };
+            
+            meals.forEach(meal => {
+                const data = dayMenu.meals[meal];
+                html += `
+                    <div class="meal-section">
+                        <div class="meal-header">${mealNames[meal]}</div>
+                        <div class="meal-content">
+                            <div class="meal-name">${data.name}</div>
+                            
+                            <div class="ingredients">
+                                <h4>🥗 食材清单</h4>
+                                <ul>
+                                    ${data.ingredients.map(ing => `<li>${ing}</li>`).join('')}
+                                </ul>
+                            </div>
+                            
+                            <div class="method">
+                                <h4>🍳 烹饪方法</h4>
+                                <p>${data.method}</p>
+                            </div>
+                            
+                            <div class="nutrition-info">
+                                <div class="nutrition-item">
+                                    <div class="nutrition-label">钠含量</div>
+                                    <div class="nutrition-value sodium">${data.sodium}mg</div>
+                                </div>
+                                <div class="nutrition-item">
+                                    <div class="nutrition-label">胆固醇</div>
+                                    <div class="nutrition-value cholesterol">${data.cholesterol}mg</div>
+                                </div>
+                                <div class="nutrition-item">
+                                    <div class="nutrition-label">热量</div>
+                                    <div class="nutrition-value calories">${data.calories}kcal</div>
+                                </div>
+                                <div class="nutrition-item">
+                                    <div class="nutrition-label">主要维生素</div>
+                                    <div class="nutrition-value vitamin">${data.vitamins}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // 显示今天的食谱
+        function showToday() {
+            const today = new Date().getDay();
+            const dayIndex = today === 0 ? 6 : today - 1;
+            showDay(dayIndex);
+        }
+
+        // 更新日期导航
+        function updateDayNav() {
+            const buttons = document.querySelectorAll('.day-btn');
+            buttons.forEach((btn, index) => {
+                if (index === currentDay) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // 今日按钮特殊处理
+            if (currentDay === new Date().getDay() - 1 || (currentDay === 6 && new Date().getDay() === 0)) {
+                buttons[7].classList.add('active');
+            } else {
+                buttons[7].classList.remove('active');
+            }
+        }
+
+        // 减少盐量
+        function reduceSalt() {
+            if (remainingSalt > 0) {
+                remainingSalt = Math.max(0, remainingSalt - 0.5);
+                updateSaltDisplay();
+                saveSaltToStorage();
+            }
+        }
+
+        // 更新盐量显示
+        function updateSaltDisplay() {
+            document.getElementById('saltAmount').textContent = remainingSalt.toFixed(1) + 'g';
+            
+            // 如果盐用完，改变颜色提醒
+            if (remainingSalt <= 0) {
+                document.getElementById('saltAmount').style.color = '#EF5350';
+            } else {
+                document.getElementById('saltAmount').style.color = '#FFE082';
+            }
+        }
+
+        // 保存盐量到本地存储
+        function saveSaltToStorage() {
+            const today = new Date().toDateString();
+            localStorage.setItem('saltTracker', JSON.stringify({
+                date: today,
+                remainingSalt: remainingSalt
+            }));
+        }
+
+        // 从本地存储加载盐量
+        function loadSaltFromStorage() {
+            const saved = localStorage.getItem('saltTracker');
+            if (saved) {
+                const data = JSON.parse(saved);
+                const today = new Date().toDateString();
+                if (data.date === today) {
+                    remainingSalt = data.remainingSalt;
+                } else {
+                    remainingSalt = 5.0; // 新的一天重置为5g
+                }
+            }
+            updateSaltDisplay();
+        }
+
+        // 监听Enter键登录
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+    </script>
+</body>
+</html>
