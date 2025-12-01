@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>花花的健康饮食管理</title>
+    <title>健康饮食管理</title>
     <style>
         * {
             margin: 0;
@@ -15,7 +15,6 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
             background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
             min-height: 100vh;
-            padding-bottom: 80px;
             background-attachment: fixed;
         }
 
@@ -257,54 +256,6 @@
         .calories { color: #4CAF50; }
         .vitamin { color: #9C27B0; }
 
-        .salt-tracker {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
-            color: white;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-            z-index: 1000;
-        }
-
-        .salt-info {
-            font-size: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .salt-amount {
-            font-size: 24px;
-            font-weight: bold;
-            color: #FFE082;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .salt-btn {
-            background: #FFE082;
-            color: #1B5E20;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: 600;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-        }
-
-        .salt-btn:hover {
-            background: #FFD54F;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-        }
-
         .medical-notice, .preference-notice {
             background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
             border-left: 4px solid #FFA000;
@@ -387,19 +338,6 @@
                 padding: 8px 10px;
             }
             
-            .salt-info {
-                font-size: 14px;
-            }
-            
-            .salt-amount {
-                font-size: 20px;
-            }
-            
-            .salt-btn {
-                padding: 8px 15px;
-                font-size: 14px;
-            }
-            
             .meal-header {
                 font-size: 18px;
                 padding: 15px;
@@ -442,24 +380,19 @@
         <!-- 登录页面 -->
         <div class="login-page active">
             <div class="login-box">
-                <h1>花花的健康饮食管理</h1>
+                <h1>健康饮食管理</h1>
                 <p style="color: #666; margin-bottom: 20px;">请输入访问密码</p>
                 <input type="password" id="passwordInput" placeholder="请输入密码" maxlength="4">
                 <button onclick="checkPassword()">进入系统</button>
                 <div class="error-msg" id="errorMsg">密码错误，请重试！</div>
-
-               <!-- <div class="medical-notice" style="margin-top: 20px; font-size: 14px;">
-                    <strong>⚠️ 医疗免责声明</strong><br>
-                    本网站提供的饮食建议仅供参考，不能替代专业医疗建议。花花阿姨患有高血压、冠心病等疾病，请务必遵医嘱用药，定期复查。如有不适，请立即就医。
-                </div>-->
             </div>
         </div>
 
         <!-- 主页面 -->
         <div class="main-page">
             <div class="welcome-header">
-                <h1>花花的健康饮食管理</h1>
-                <p>每日盐量监控 | 个性化食谱推荐</p>
+                <h1>健康饮食管理</h1>
+                <p>每日营养分析 | 个性化食谱推荐</p>
             </div>
 
             <div class="preference-notice">
@@ -485,15 +418,6 @@
 
             <div id="mealContainer"></div>
         </div>
-    </div>
-
-    <!-- 盐勺跟踪器 -->
-    <div class="salt-tracker">
-        <div class="salt-info">
-            <div>今日盐勺剩余</div>
-            <div class="salt-amount" id="saltAmount">5.0g</div>
-        </div>
-        <button class="salt-btn" onclick="reduceSalt()">使用 -0.5g</button>
     </div>
 
     <script>
@@ -580,7 +504,7 @@
                     snack: {
                         name: "蒸地瓜+百合",
                         ingredients: ["地瓜 150g", "百合 20g"],
-                        method: "地瓜去皮切块，与百合一起蒸20分钟至熟软",
+                        method: "地瓜去皮切块，与百���一起蒸20分钟至熟软",
                         sodium: 8,
                         cholesterol: 0,
                         calories: 140,
@@ -768,7 +692,7 @@
                     snack: {
                         name: "蒸胡萝卜+百合银耳",
                         ingredients: ["胡萝卜 150g", "百合 20g", "银耳 5g"],
-                        method: "胡萝卜切块，与泡发银耳、百合一起蒸20分钟",
+                        method: "胡萝卜切块，与泡发银耳、百合一��蒸20分钟",
                         sodium: 15,
                         cholesterol: 0,
                         calories: 95,
@@ -838,11 +762,9 @@
         };
 
         let currentDay = 0;
-        let remainingSalt = 5.0;
 
         // 初始化
         window.onload = function() {
-            loadSaltFromStorage();
             showDay(0);
         };
 
@@ -976,51 +898,6 @@
             }
         }
 
-     <!--   // 减少盐量
-        function reduceSalt() {
-            if (remainingSalt > 0) {
-                remainingSalt = Math.max(0, remainingSalt - 0.5);
-                updateSaltDisplay();
-                saveSaltToStorage();
-            }
-        }
-
-        // 更新盐量显示
-        function updateSaltDisplay() {
-            document.getElementById('saltAmount').textContent = remainingSalt.toFixed(1) + 'g';
-            
-            // 如果盐用完，改变颜色提醒
-            if (remainingSalt <= 0) {
-                document.getElementById('saltAmount').style.color = '#EF5350';
-            } else {
-                document.getElementById('saltAmount').style.color = '#FFE082';
-            }
-        }
-
-        // 保存盐量到本地存储
-        function saveSaltToStorage() {
-            const today = new Date().toDateString();
-            localStorage.setItem('saltTracker', JSON.stringify({
-                date: today,
-                remainingSalt: remainingSalt
-            }));
-        }
-
-        // 从本地存储加载盐量
-        function loadSaltFromStorage() {
-            const saved = localStorage.getItem('saltTracker');
-            if (saved) {
-                const data = JSON.parse(saved);
-                const today = new Date().toDateString();
-                if (data.date === today) {
-                    remainingSalt = data.remainingSalt;
-                } else {
-                    remainingSalt = 5.0; // 新的一天重置为5g
-                }
-            }
-            updateSaltDisplay();
-        }
--->
         // 监听Enter键登录
         document.getElementById('passwordInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
